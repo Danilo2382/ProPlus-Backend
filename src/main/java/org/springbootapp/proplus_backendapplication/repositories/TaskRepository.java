@@ -1,11 +1,9 @@
 package org.springbootapp.proplus_backendapplication.repositories;
 
-import org.springbootapp.proplus_backendapplication.model.ProjectMember;
 import org.springbootapp.proplus_backendapplication.model.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository

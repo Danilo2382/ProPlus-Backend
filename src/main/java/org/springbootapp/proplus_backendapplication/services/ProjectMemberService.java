@@ -53,15 +53,15 @@ public class ProjectMemberService {
         }
     }
 
-    public ProjectMember saveProjectMember(ProjectMember projectMember) {
-        try {
-            if (checkProjectMember(projectMember.getProjectIdproject(), projectMember.getUserIduser()))
-                throw new ResourceConflictException("Project member " + projectMember.getUserIduser().getUsername());
-            return projectMemberRepository.save(projectMember);
-        } catch (DataAccessException ex) {
-            throw new DataBaseException(ex.getMessage());
-        }
-    }
+//    public ProjectMember saveProjectMember(ProjectMember projectMember) {
+//        try {
+//            if (checkProjectMember(projectMember.getProjectIdproject(), projectMember.getUserIduser()))
+//                throw new ResourceConflictException("Project member " + projectMember.getUserIduser().getUsername());
+//            return projectMemberRepository.save(projectMember);
+//        } catch (DataAccessException ex) {
+//            throw new DataBaseException(ex.getMessage());
+//        }
+//    }
 
     public void saveProjectMember(Project project, User user, Integer role) {
         try {
