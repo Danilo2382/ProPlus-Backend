@@ -1,5 +1,7 @@
 package org.springbootapp.proplus_backendapplication.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -8,34 +10,38 @@ import lombok.Setter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Entity
 @Getter
 @Setter
-@Entity
-@Table(name = "projectmember")
 public class ProjectMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idProjectMember", nullable = false)
-    private Integer id;
+    @Column(nullable = false, unique = true)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long id;
 
     @NotNull
-    @Column(name = "role", nullable = false)
+    @Column(nullable = false)
     private Integer role;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "User_idUser", nullable = false)
-    private User userIduser;
+    @JoinColumn(name = "user", nullable = false)
+    @JsonIgnore
+    private User user;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "Project_idProject", nullable = false)
-    private Project projectIdproject;
+    @JoinColumn(name = "project", nullable = false)
+    @JsonIgnore
+    private Project project;
 
-    @OneToMany(mappedBy = "projectmemberIdprojectmember")
+    @OneToMany(mappedBy = "projectMember")
+    @JsonIgnore
     private Set<Comment> comments = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "projectmemberIdprojectmember")
+    @OneToMany(mappedBy = "projectMember")
+    @JsonIgnore
     private Set<Task> tasks = new LinkedHashSet<>();
 
 }

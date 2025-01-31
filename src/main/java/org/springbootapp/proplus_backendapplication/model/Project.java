@@ -1,65 +1,69 @@
 package org.springbootapp.proplus_backendapplication.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Entity
 @Getter
 @Setter
-@Entity
-@Table(name = "project")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idProject", nullable = false)
-    private Integer id;
+    @Column(nullable = false, unique = true)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long id;
 
-    @Size(max = 45)
-    @NotNull
-    @Column(name = "name", nullable = false, length = 45)
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Size(max = 1000)
-    @NotNull
-    @Column(name = "description", nullable = false, length = 1000)
+    @Column(nullable = false, length = 1000)
     private String description;
 
-    @NotNull
-    @Column(name = "startDate", nullable = false)
-    private LocalDateTime startDate;
+    @Column(nullable = false)
+    private LocalDateTime startDateTime;
 
-    @NotNull
-    @Column(name = "endDate", nullable = false)
-    private LocalDateTime endDate;
+    @Column(nullable = false)
+    private LocalDateTime endDateTime;
 
-    @NotNull
-    @Column(name = "createDate", nullable = false)
-    private LocalDateTime createDate;
+    @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDate createDate;
 
-    @NotNull
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer status;
 
-    @Size(max = 45)
-    @NotNull
-    @Column(name = "code", nullable = false, length = 45)
+    @Column(nullable = false, unique = true, length = 100)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String code;
 
-    @Size(max = 45)
-    @NotNull
-    @Column(name = "password", nullable = false, length = 45)
+    @Column(nullable = false, length = 100)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @OneToMany(mappedBy = "projectIdproject")
-    private Set<ProjectMember> projectmembers = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<ProjectMember> projectMembers = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "projectIdproject")
-    private Set<Task> tasks = new LinkedHashSet<>();
-
+    @PrePersist
+    public void setUp() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createDate = now.toLocalDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+        this.code = "PRJ-" + formatter.format(now);
+        this.status = now.isBefore(startDateTime) ? 3 : now.isAfter(endDateTime) ? 0 : 2;
+    }
 }

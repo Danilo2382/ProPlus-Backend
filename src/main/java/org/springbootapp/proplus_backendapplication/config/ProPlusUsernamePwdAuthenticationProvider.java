@@ -21,13 +21,12 @@ public class ProPlusUsernamePwdAuthenticationProvider implements AuthenticationP
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
-        String pwd = authentication.getCredentials().toString();
+        String password = authentication.getCredentials().toString();
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        if (passwordEncoder.matches(pwd, userDetails.getPassword())) {
-            return new UsernamePasswordAuthenticationToken(username, pwd, userDetails.getAuthorities());
-        } else {
-            throw new BadCredentialsException("Invalid password!");
-        }
+        if (passwordEncoder.matches(password, userDetails.getPassword()))
+            return new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
+        else
+            throw new BadCredentialsException("Invalid password.");
     }
 
     @Override

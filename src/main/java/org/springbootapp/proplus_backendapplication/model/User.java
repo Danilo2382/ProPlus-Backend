@@ -1,62 +1,60 @@
 package org.springbootapp.proplus_backendapplication.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Entity
 @Getter
 @Setter
-@Entity
-@Table(name = "user")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idUser", nullable = false)
-    private Integer id;
+    @Column(nullable = false, unique = true)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long id;
 
-    @Size(max = 45)
-    @NotNull
-    @Column(name = "username", nullable = false, length = 45)
+    @Column(nullable = false, unique = true, length = 100)
     private String username;
 
-    @Size(max = 45)
-    @NotNull
-    @Column(name = "email", nullable = false, length = 45)
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Size(max = 500)
-    @NotNull
-    @Column(name = "password", nullable = false, length = 500)
+    @Column(nullable = false, length = 100)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @Size(max = 45)
-    @NotNull
-    @Column(name = "firstName", nullable = false, length = 45)
-    private String firstName;
+    @Column(nullable = false, length = 100)
+    private String name;
 
-    @Size(max = 45)
-    @NotNull
-    @Column(name = "secondName", nullable = false, length = 45)
-    private String secondName;
+    @Column(nullable = false, length = 100)
+    private String surname;
 
-    @NotNull
-    @Column(name = "birthday", nullable = false)
-    private LocalDateTime birthday;
+    @Column(nullable = false)
+    private LocalDate birthday;
 
-    @NotNull
-    @Column(name = "joinDate", nullable = false)
-    private LocalDateTime joinDate;
+    @Column(nullable = false)
+    @JsonIgnore
+    private LocalDate createDate;
 
-    @Column(name = "profilePicture")
     private String profilePicture;
 
-    @OneToMany(mappedBy = "userIduser")
-    private Set<ProjectMember> projectmembers = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Set<ProjectMember> projectMembers = new LinkedHashSet<>();
 
+    @PrePersist
+    public void setUp() {
+        this.createDate = LocalDate.now();
+    }
 }
