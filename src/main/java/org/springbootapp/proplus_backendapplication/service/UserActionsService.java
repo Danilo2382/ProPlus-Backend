@@ -1,6 +1,7 @@
 package org.springbootapp.proplus_backendapplication.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springbootapp.proplus_backendapplication.dto.response.ProjectAdminRoleDto;
 import org.springbootapp.proplus_backendapplication.exception.NotFoundException;
 import org.springbootapp.proplus_backendapplication.model.Project;
 import org.springbootapp.proplus_backendapplication.model.ProjectMember;
@@ -33,16 +34,17 @@ public class UserActionsService {
         return saved;
     }
 
-    public Project joinProject(String username, String code, String password) {
+    public ProjectAdminRoleDto joinProject(String username, String code, String password) {
         User user = userInfoService.getUserByUsername(username);
         Project project = projectRepository.findByCode(code).orElseThrow(() -> new NotFoundException("Project with code " + code));
-        if (!project.getPassword().equals(password)) throw new BadCredentialsException("Invalid password.");
+        if (!project.getPassword().equals(password)) throw new BadCredentialsException("Invalid password");
         saveProjectMember(user, project, 0);
-        return project;
+        User admin = projectMemberRepository.findAdminByProjectId(project.getId()).getUser();
+        return new ProjectAdminRoleDto(project.getId(), project.getName(), project.getStatus(), admin.getProfilePicture(), admin.getUsername(), 0);
     }
 
-    public Set<Project> getProjects(String username) {
-        return projectRepository.findAllByProjectMembers_User_Username(username);
+    public Set<ProjectAdminRoleDto> getProjects(String username) {
+        return projectRepository.findAllWithAdminAndRoleByUsername(username);
     }
 
     public Set<Task> getTasks(String username) {

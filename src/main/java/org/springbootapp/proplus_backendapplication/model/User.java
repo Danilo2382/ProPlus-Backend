@@ -44,7 +44,6 @@ public class User {
     private LocalDate birthday;
 
     @Column(nullable = false)
-    @JsonIgnore
     private LocalDate createDate;
 
     private String profilePicture;

@@ -3,6 +3,7 @@ package org.springbootapp.proplus_backendapplication.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springbootapp.proplus_backendapplication.dto.request.ProjectDto;
+import org.springbootapp.proplus_backendapplication.dto.response.ProjectAdminRoleDto;
 import org.springbootapp.proplus_backendapplication.model.Project;
 import org.springbootapp.proplus_backendapplication.model.Task;
 import org.springbootapp.proplus_backendapplication.dto.request.JoinProjectDto;
@@ -21,7 +22,7 @@ public class UserActionsController {
     private final UserActionsService userActionsService;
 
     @GetMapping("/projects")
-    public ResponseEntity<Set<Project>> getProjects(Principal principal) {
+    public ResponseEntity<Set<ProjectAdminRoleDto>> getProjects(Principal principal) {
         return ResponseEntity.ok().body(userActionsService.getProjects(principal.getName()));
     }
 
@@ -36,7 +37,7 @@ public class UserActionsController {
     }
 
     @PostMapping("/joinProject")
-    public ResponseEntity<Project> joinProject(@RequestBody @Valid JoinProjectDto body, Principal principal) {
+    public ResponseEntity<ProjectAdminRoleDto> joinProject(@RequestBody @Valid JoinProjectDto body, Principal principal) {
         return ResponseEntity.ok().body(userActionsService.joinProject(principal.getName(), body.code(), body.password()));
     }
 

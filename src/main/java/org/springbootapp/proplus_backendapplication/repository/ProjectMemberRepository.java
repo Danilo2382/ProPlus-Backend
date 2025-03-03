@@ -16,8 +16,10 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Lo
 
     Boolean existsByUser_UsernameAndProject_Id(String username, Long projectId);
 
+    @Query("SELECT pm FROM ProjectMember pm WHERE pm.project.id = :projectId AND pm.role = 2")
+    ProjectMember findAdminByProjectId(Long projectId);
+
     @Query("SELECT NEW org.springbootapp.proplus_backendapplication.dto.response.ProjectMemberUsernameDto(pm, pm.user.username)" +
             "FROM ProjectMember pm WHERE pm.project.id = :projectId")
     Set<ProjectMemberUsernameDto> findAllWithUsernameByProject_Id(Long projectId);
-
 }
